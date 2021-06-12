@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.serratec.viroumemeapi.dtos.CategoriaDTORequest;
 import org.serratec.viroumemeapi.entities.CategoriaEntity;
+import org.serratec.viroumemeapi.exceptions.CategoryReferencedByProductException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.CategoriaMapper;
 import org.serratec.viroumemeapi.repositories.CategoriaRepository;
@@ -53,8 +54,13 @@ public class CategoriaService {
 		return categoriaRepository.save(entity);
 	}
 
-	public void delete(Long id) throws ItemNotFoundException {
-		this.getById(id);
+	public void delete(Long id) throws ItemNotFoundException, CategoryReferencedByProductException {
+		CategoriaEntity categoria = this.getById(id);
+
+		if (!categoria.getProdutosDaCategoria().isEmpty()) {
+			throw new CategoryReferencedByProductException(
+					"Categorias referenciadas por algum produto não podem ser deletadas.");
+		}
 
 		categoriaRepository.deleteById(id);
 	}

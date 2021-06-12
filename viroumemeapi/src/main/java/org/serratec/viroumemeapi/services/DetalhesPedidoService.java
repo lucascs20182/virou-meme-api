@@ -45,7 +45,7 @@ public class DetalhesPedidoService {
 	public DetalhesPedidoEntity create(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		DetalhesPedidoEntity entity = detalhesPedidoMapper.toEntity(dto);
 
-		// PODE SER AQUI O PROBLEMA 
+		// PODE SER AQUI O PROBLEMA
 		PedidoEntity pedido = pedidoService.getById(dto.getIdPedido());
 
 		if (pedido.getStatus() != StatusPedido.NAO_FINALIZADO) {
@@ -53,7 +53,7 @@ public class DetalhesPedidoService {
 		}
 
 		detalhesPedidoRepository.save(entity);
-		
+
 		// recalcula valorTotal e dataEntrega
 		pedidoService.update(entity.getPedido().getId());
 
@@ -75,9 +75,9 @@ public class DetalhesPedidoService {
 		if (dto.getQuantidade() != null) {
 			entity.setQuantidade(dto.getQuantidade());
 		}
-		
+
 		detalhesPedidoRepository.save(entity);
-		
+
 		// PODE SER AQUI O PROBLEMA ok
 		pedidoService.update(entity.getPedido().getId());
 

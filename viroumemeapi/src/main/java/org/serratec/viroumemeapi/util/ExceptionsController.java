@@ -1,5 +1,6 @@
 package org.serratec.viroumemeapi.util;
 
+import org.serratec.viroumemeapi.exceptions.CategoryReferencedByProductException;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.exceptions.PurchaseOrderNotEditableException;
@@ -25,9 +26,16 @@ public class ExceptionsController {
 	public ResponseEntity<String> handlePurchaseOrderNotEditableException(PurchaseOrderNotEditableException exception) {
 		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
-	
+
 	@ExceptionHandler(PurchaseOrderWithNoProductException.class)
-	public ResponseEntity<String> handlePurchaseOrderWithNoProductExceptionn(PurchaseOrderWithNoProductException exception) {
+	public ResponseEntity<String> handlePurchaseOrderWithNoProductException(
+			PurchaseOrderWithNoProductException exception) {
+		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+	}
+
+	@ExceptionHandler(CategoryReferencedByProductException.class)
+	public ResponseEntity<String> handleCategoryReferencedByProductException(
+			CategoryReferencedByProductException exception) {
 		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
 	}
 }

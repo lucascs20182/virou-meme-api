@@ -12,6 +12,7 @@ import org.serratec.viroumemeapi.services.DetalhesPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,14 +55,18 @@ public class DetalhesPedidoController {
 		return new ResponseEntity<String>("Detalhe de pedido cadastrado com sucesso", HttpStatus.CREATED);
 	}
 
-	// funciona mas tem que passar "idPedido" no body
-	// lembrar de debuggar onde estuo exigindo o id do pedido 
-	// para então recuperar o idPedido a partir do id do detalhe do pedido
 	@PutMapping("/{id}")
 	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody DetalhesPedidoDTORequest dto)
 			throws ItemNotFoundException {
 		service.update(id, dto);
 
 		return new ResponseEntity<String>("Detalhe de pedido editado com sucesso", HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> delete(@PathVariable Long id) throws ItemNotFoundException {
+		service.delete(id);
+
+		return new ResponseEntity<String>("Endereço deletado com sucesso", HttpStatus.OK);
 	}
 }

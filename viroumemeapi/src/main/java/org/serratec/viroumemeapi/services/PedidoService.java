@@ -62,7 +62,8 @@ public class PedidoService {
 
 		entity.setDataEntrega(LocalDate.now().plusDays(15));
 
-		// salva a entity incompleta para referenciá-la na criação dos detalhes do pedido
+		// salva a entity incompleta para referenciá-la na criação dos detalhes do
+		// pedido
 		entity = pedidoRepository.save(entity);
 
 		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
@@ -83,7 +84,7 @@ public class PedidoService {
 		}
 
 		entity.setProdutosDoPedido(produtosDoPedido);
-		
+
 		entity = pedidoRepository.save(entity);
 
 		// atualiza o pedido calculando valorTotal e dataEntrega
@@ -96,10 +97,11 @@ public class PedidoService {
 		if (entity.getStatus() != StatusPedido.NAO_FINALIZADO) {
 			throw new ItemNotFoundException("Pedido finalizado não pode ser alterado.");
 		}
-		
-		// identifica se o pedido está sendo criado com detalhes do pedido embutido 
-		// nesse caso já está sendo atualizado na criação, que também chama o método update
-		if(entity.getProdutosDoPedido() == null) {
+
+		// identifica se o pedido está sendo criado com detalhes do pedido embutido
+		// nesse caso já está sendo atualizado na criação, que também chama o método
+		// update
+		if (entity.getProdutosDoPedido() == null) {
 			return pedidoRepository.save(entity);
 		}
 

@@ -26,15 +26,14 @@ public class DetalhesPedidoMapper {
 		// idPedido pode não ter seu valor passado no dto
 		// em casos como da criação no próprio pedido ou edição do detalhe do pedido
 		// na edição do detalhe do pedido já temos acesso ao id do detalhe do pedido
-		if(dto.getIdPedido() != null) {
+		if (dto.getIdPedido() != null) {
 			PedidoEntity entityPedido = pedidoService.getById(dto.getIdPedido());
-			
+
 			entity.setPedido(entityPedido);
 		}
-		
+
 		ProdutoEntity entityProduto = produtoService.getById(dto.getIdProduto());
 
-		
 		entity.setProduto(entityProduto);
 		entity.setQuantidade(dto.getQuantidade());
 		entity.setPreco(entityProduto.getPreco());

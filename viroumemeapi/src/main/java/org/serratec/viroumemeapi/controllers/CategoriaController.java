@@ -6,6 +6,7 @@ import java.util.List;
 import org.serratec.viroumemeapi.dtos.CategoriaDTORequest;
 import org.serratec.viroumemeapi.dtos.CategoriaDTOResponse;
 import org.serratec.viroumemeapi.entities.CategoriaEntity;
+import org.serratec.viroumemeapi.exceptions.CategoryReferencedByProductException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.CategoriaMapper;
 import org.serratec.viroumemeapi.services.CategoriaService;
@@ -65,7 +66,8 @@ public class CategoriaController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> delete(@PathVariable Long id) throws ItemNotFoundException {
+	public ResponseEntity<String> delete(@PathVariable Long id)
+			throws ItemNotFoundException, CategoryReferencedByProductException {
 		service.delete(id);
 
 		return new ResponseEntity<String>("Categoria deletada com sucesso", HttpStatus.OK);

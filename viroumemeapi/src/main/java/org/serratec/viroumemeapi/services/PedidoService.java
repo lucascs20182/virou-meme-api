@@ -63,7 +63,10 @@ public class PedidoService {
 		entity.setDataEntrega(LocalDate.now().plusDays(15));
 
 		// salva a entity incompleta para referenciar na criação dos detalhes do pedido
-		pedidoRepository.save(entity);
+		entity = pedidoRepository.save(entity);
+		
+		System.out.println("valorId1" + entity.getId());
+		System.out.println("valorbla1" + entity.getProdutosDoPedido());
 
 		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
 
@@ -72,22 +75,74 @@ public class PedidoService {
 
 			detalhesPedido.setIdPedido(entity.getId());
 
-			DetalhesPedidoEntity produtoDoPedido = detalhesPedidoService.create(detalhesPedido);
+			try {
+				DetalhesPedidoEntity produtoDoPedido = detalhesPedidoService.create(detalhesPedido);
 
-			produtosDoPedido.add(produtoDoPedido);
+				produtosDoPedido.add(produtoDoPedido);
+			} catch (ItemNotFoundException exception) {
+				throw new ItemNotFoundException(
+						"Não existe produto com esse Id. " + "O pedido foi criado sem produtos.");
+			}
 		}
 
 		entity.setProdutosDoPedido(produtosDoPedido);
 
 		// preenche pedidosDoProduto no ProdutoEntity
-		for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
-			DetalhesPedidoEntity detalhesPedidoEntity = detalhesPedidoMapper.toEntity(detalhesPedido);
+//		for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
+//			DetalhesPedidoEntity detalhesPedidoEntity = detalhesPedidoMapper.toEntity(detalhesPedido);
+//
+//			ProdutoEntity produto = produtoService.getById(detalhesPedido.getIdProduto());
+//
+//			List<DetalhesPedidoEntity> pedidosComEsseProduto = produto.getPedidosDoProduto();
+//
+//			pedidosComEsseProduto.add(detalhesPedidoEntity);
+//
+//			produto.setPedidosDoProduto(pedidosComEsseProduto);
+//		}
+		
+		// salva a entity incompleta para calcular o valorTotal
+//		entity = pedidoRepository.save(entity);
 
-			ProdutoEntity produto = produtoService.getById(detalhesPedido.getIdProduto());
+//		Double valorTotal = 0.0;
+//
+//		// provável erro aqui
+//		// calcula o valorTotal
+//		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
+//			valorTotal += detalhesPedido.getPreco() * detalhesPedido.getQuantidade();
+//		}
+//
+//		entity.setValorTotal(valorTotal);
+		
+		entity = pedidoRepository.save(entity);
+		
+		System.out.println("valorId2" + entity.getId());
+		System.out.println("valorbla2" + entity.getProdutosDoPedido());
+
+		// atualiza o pedido calculando valorTotal etc.
+		return this.update(entity.getId());
+	}
+
+	public PedidoEntity update(Long id) throws ItemNotFoundException {
+		PedidoEntity entity = this.getById(id);
+
+		if (entity.getStatus() != StatusPedido.NAO_FINALIZADO) {
+			throw new ItemNotFoundException("Pedido finalizado não pode ser alterado.");
+		}
+		
+		// criando o pedido imbutido de detalhes do pedido
+		// caso não entre no if o detalhe do pedido está sendo criado depois
+		if(entity.getProdutosDoPedido() == null) {
+			return pedidoRepository.save(entity);
+		}
+
+		// preenche pedidosDoProduto no ProdutoEntity
+		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
+
+			ProdutoEntity produto = detalhesPedido.getProduto();
 
 			List<DetalhesPedidoEntity> pedidosComEsseProduto = produto.getPedidosDoProduto();
 
-			pedidosComEsseProduto.add(detalhesPedidoEntity);
+			pedidosComEsseProduto.add(detalhesPedido);
 
 			produto.setPedidosDoProduto(pedidosComEsseProduto);
 		}
@@ -101,59 +156,10 @@ public class PedidoService {
 
 		entity.setValorTotal(valorTotal);
 
-		return pedidoRepository.save(entity);
-	}
+		LocalDate dataQuePedidoFoiFinalizado = LocalDate.now();
+		entity.setDataEntrega(dataQuePedidoFoiFinalizado.plusDays(15));
 
-	public PedidoEntity update(Long id, DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
-//		PedidoEntity entity = this.getById(id);
-//		
-//		if (entity.getStatus() != StatusPedido.NAO_FINALIZADO) {
-//			throw new ItemNotFoundException("Pedido finalizado não pode ser alterado.");
-//		}
-//
-//		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
-//
-//		// cria os detalhes de pedido
-//		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
-//
-//			detalhesPedido.set
-//			detalhesPedido.setIdPedido(entity.getId());
-//
-//			DetalhesPedidoEntity produtoDoPedido = detalhesPedidoService.create(detalhesPedido);
-//
-//			produtosDoPedido.add(produtoDoPedido);
-//		}
-//
-//		entity.setProdutosDoPedido(produtosDoPedido);
-//		
-//		// preenche pedidosDoProduto no ProdutoEntity
-//		for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
-//			DetalhesPedidoEntity detalhesPedidoEntity = detalhesPedidoMapper.toEntity(detalhesPedido);
-//
-//			ProdutoEntity produto = produtoService.getById(detalhesPedido.getIdProduto());
-//
-//			List<DetalhesPedidoEntity> pedidosComEsseProduto = produto.getPedidosDoProduto();
-//
-//			pedidosComEsseProduto.add(detalhesPedidoEntity);
-//
-//			produto.setPedidosDoProduto(pedidosComEsseProduto);
-//		}
-//
-//		Double valorTotal = 0.0;
-//
-//		// calcula o valorTotal
-//		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
-//			valorTotal += detalhesPedido.getPreco() * detalhesPedido.getQuantidade();
-//		}
-//
-//		entity.setValorTotal(valorTotal);
-//		
-//		LocalDate dataQuePedidoFoiFinalizado = LocalDate.now();
-//		entity.setDataEntrega(dataQuePedidoFoiFinalizado.plusDays(15));
-//
-//		return pedidoRepository.save(entity);
-		
-		return null;
+		return pedidoRepository.save(entity);
 	}
 
 	public PedidoEntity updateStatus(Long id) throws ItemNotFoundException {

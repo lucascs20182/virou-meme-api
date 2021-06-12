@@ -1,6 +1,5 @@
 package org.serratec.viroumemeapi.services;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +24,7 @@ public class DetalhesPedidoService {
 
 	@Autowired
 	PedidoService pedidoService;
-	
+
 	@Autowired
 	ProdutoService produtoService;
 
@@ -47,36 +46,41 @@ public class DetalhesPedidoService {
 	public DetalhesPedidoEntity create(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		DetalhesPedidoEntity entity = detalhesPedidoMapper.toEntity(dto);
 
-		return detalhesPedidoRepository.save(entity);
+		PedidoEntity pedido = pedidoService.getById(dto.getIdPedido());
+
+		if (pedido.getStatus() != StatusPedido.NAO_FINALIZADO) {
+			throw new ItemNotFoundException("Componentes de Pedido finalizado não podem ser alterados.");
+		}
+
+		detalhesPedidoRepository.save(entity);
+		
+		pedidoService.update(dto.getIdPedido());
+
+		return entity;
 	}
 
 	// toda vez que um detalhe de pedido for editado
 	// os cálculos do pedido devem ser atualizados
 	public DetalhesPedidoEntity update(Long id, DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 
-//		DetalhesPedidoEntity entity = this.getById(id);
-//
-//		if (entity.getPedido().getStatus() != StatusPedido.NAO_FINALIZADO) {
-//			throw new ItemNotFoundException("Componentes de Pedido finalizado não podem ser alterados.");
-//		}
-//		
-//		entity.getId();
-//
-//		if (dto.getIdProduto() != null) {
-//			entity.setProduto(produtoService.getById(dto.getIdProduto()));
-//		}
-//
-//		if (dto.getQuantidade() != null) {
-//			entity.setQuantidade(dto.getQuantidade());
-//		}
-//
-//		// recalcule os atributos do pedido
-//		PedidoEntity pedido = pedidoService.getById(dto.getIdPedido());
-//		
-//		
-//		
+		DetalhesPedidoEntity entity = this.getById(id);
 
-		return null;
+		if (entity.getPedido().getStatus() != StatusPedido.NAO_FINALIZADO) {
+			throw new ItemNotFoundException("Componentes de Pedido finalizado não podem ser alterados.");
+		}
+
+		if (dto.getIdProduto() != null) {
+			entity.setProduto(produtoService.getById(dto.getIdProduto()));
+		}
+
+		if (dto.getQuantidade() != null) {
+			entity.setQuantidade(dto.getQuantidade());
+		}
+		
+		detalhesPedidoRepository.save(entity);
+		pedidoService.update(dto.getIdPedido());
+
+		return entity;
 	}
 
 	public void delete(Long id) throws ItemNotFoundException {

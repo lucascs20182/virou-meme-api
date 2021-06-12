@@ -3,6 +3,7 @@ package org.serratec.viroumemeapi.util;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.exceptions.PurchaseOrderNotEditableException;
+import org.serratec.viroumemeapi.exceptions.PurchaseOrderWithNoProductException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,5 +24,10 @@ public class ExceptionsController {
 	@ExceptionHandler(PurchaseOrderNotEditableException.class)
 	public ResponseEntity<String> handlePurchaseOrderNotEditableException(PurchaseOrderNotEditableException exception) {
 		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
+	}
+	
+	@ExceptionHandler(PurchaseOrderWithNoProductException.class)
+	public ResponseEntity<String> handlePurchaseOrderWithNoProductExceptionn(PurchaseOrderWithNoProductException exception) {
+		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
 	}
 }

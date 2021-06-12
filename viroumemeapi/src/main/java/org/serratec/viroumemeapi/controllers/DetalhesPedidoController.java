@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,14 @@ public class DetalhesPedidoController {
 	public ResponseEntity<String> create(@RequestBody DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		service.create(dto);
 
-		return new ResponseEntity<String>("Pedido cadastrado com sucesso", HttpStatus.CREATED);
+		return new ResponseEntity<String>("Detalhe de pedido cadastrado com sucesso", HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody DetalhesPedidoDTORequest dto)
+			throws ItemNotFoundException {
+		service.update(id, dto);
+
+		return new ResponseEntity<String>("Detalhe de pedido editado com sucesso", HttpStatus.OK);
 	}
 }

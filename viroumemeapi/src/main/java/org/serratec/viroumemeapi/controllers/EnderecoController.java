@@ -1,0 +1,63 @@
+package org.serratec.viroumemeapi.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
+import org.serratec.viroumemeapi.dtos.EnderecoDTOResponse;
+import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.mappers.EnderecoMapper;
+import org.serratec.viroumemeapi.services.EnderecoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/endereco")
+public class EnderecoController {
+
+	@Autowired
+	EnderecoService service;
+
+	@Autowired
+	EnderecoMapper enderecoMapper;
+
+	@GetMapping
+	public ResponseEntity<List<EnderecoDTOResponse>> getAll() {
+		List<EnderecoDTOResponse> listaEnderecosResponse = new ArrayList<EnderecoDTOResponse>();
+
+		for (EnderecoEntity endereco : service.getAll()) {
+			listaEnderecosResponse.add(enderecoMapper.toDto(endereco));
+		}
+
+		return new ResponseEntity<List<EnderecoDTOResponse>>(listaEnderecosResponse, HttpStatus.OK);
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<EnderecoDTOResponse> getById(@PathVariable Long id) {
+		EnderecoDTOResponse enderecoResponse = enderecoMapper.toDto(service.getById(id));
+
+		return new ResponseEntity<EnderecoDTOResponse>(enderecoResponse, HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<String> create(@RequestBody EnderecoDTORequest endereco) {
+		enderecoMapper.toDto(service.create(endereco));
+
+		return new ResponseEntity<String>("Endereço cadastrado com sucesso", HttpStatus.CREATED);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> delete(@PathVariable Long id) {
+		service.delete(id);
+		
+		return new ResponseEntity<String>("Endereço deletado com sucesso", HttpStatus.OK);
+	}
+}

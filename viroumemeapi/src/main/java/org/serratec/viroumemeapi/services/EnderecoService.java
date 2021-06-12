@@ -54,6 +54,10 @@ public class EnderecoService {
 	public EnderecoEntity update(Long id, EnderecoDTORequest dto) throws ItemNotFoundException {
 		EnderecoEntity endereco = this.getById(id);
 
+		if (dto.getCep() != null) {
+			endereco.setCep(dto.getCep());
+		}
+		
 		if (dto.getNumero() != null) {
 			endereco.setNumero(dto.getNumero());
 		}
@@ -61,10 +65,6 @@ public class EnderecoService {
 		if (dto.getComplemento() != null) {
 			endereco.setComplemento(dto.getComplemento());
 		}
-
-//		if (dto.getClienteId() != null) {
-//			endereco.setCliente(clienteService.getById(dto.getClienteId()));
-//		}
 
 		return enderecoRepository.save(endereco);
 	}

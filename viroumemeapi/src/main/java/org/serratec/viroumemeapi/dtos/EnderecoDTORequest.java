@@ -13,7 +13,7 @@ public class EnderecoDTORequest {
 	@Schema(description = "Complemento do endereço (Apto, bloco etc.)")
 	private String complemento;
 
-	@Schema(description = "Na criação do usuário esse campo não é necessário")
+	@Schema(description = "Na criação do usuário ou na edição de endereço esse campo não é necessário")
 	private Long clienteId;
 
 	public String getCep() {

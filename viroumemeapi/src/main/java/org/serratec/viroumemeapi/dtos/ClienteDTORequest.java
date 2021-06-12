@@ -22,7 +22,7 @@ public class ClienteDTORequest {
 	private LocalDate dataNascimento;
 
 	@Schema(description = "Na edição do cliente esse campo não é necessário. "
-			+ "O endereço do cliente pode ser editado nos endpoints /endereco")
+			+ "O endereço do cliente pode ser editado no endpoint /endereco")
 	private List<EnderecoDTORequest> enderecosDoCliente;
 
 	public String getEmail() {

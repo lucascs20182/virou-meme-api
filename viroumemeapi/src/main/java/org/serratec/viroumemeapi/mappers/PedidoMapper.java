@@ -3,13 +3,15 @@ package org.serratec.viroumemeapi.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTOResponse;
 import org.serratec.viroumemeapi.dtos.PedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.PedidoDTOResponse;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.services.ClienteService;
+import org.serratec.viroumemeapi.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,22 +21,26 @@ public class PedidoMapper {
 	@Autowired
 	DetalhesPedidoMapper mapperDetalhesPedido;
 
-	public PedidoEntity toEntity(PedidoDTORequest dto) {
+	@Autowired
+	ClienteService clienteService;
+
+	@Autowired
+	ProdutoService produtoService;
+
+//	@Autowired
+//	DetalhesPedidoService serverDetalhesPedido;
+
+	public PedidoEntity toEntity(PedidoDTORequest dto) throws ItemNotFoundException {
 		PedidoEntity entity = new PedidoEntity();
 
-		ClienteEntity entityCliente = new ClienteEntity();
-		entityCliente.setId(dto.getIdCliente());
-
-		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
-
-		for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
-			DetalhesPedidoEntity entityDetalhesPedido = mapperDetalhesPedido.toEntity(detalhesPedido);
-
-			produtosDoPedido.add(entityDetalhesPedido);
-		}
+		ClienteEntity entityCliente = clienteService.getById(dto.getIdCliente());
 
 		entity.setCliente(entityCliente);
-		entity.setProdutosDoPedido(produtosDoPedido);
+
+		List<PedidoEntity> pedidosDoCliente = entityCliente.getPedidosDoCliente();
+		pedidosDoCliente.add(entity);
+
+		entityCliente.setPedidosDoCliente(pedidosDoCliente);
 
 		return entity;
 	}
@@ -58,6 +64,8 @@ public class PedidoMapper {
 		}
 
 		dto.setIdDoClienteQueFezPedido(entity.getCliente().getId());
+		
+		dto.setProdutosDoPedido(listaDetalhesDosPedidos);
 
 		return dto;
 	}

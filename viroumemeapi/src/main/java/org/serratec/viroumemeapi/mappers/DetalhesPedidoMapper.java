@@ -4,19 +4,28 @@ import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTOResponse;
 import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
 import org.serratec.viroumemeapi.entities.ProdutoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.services.ProdutoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DetalhesPedidoMapper {
+	
+	@Autowired
+	ProdutoService produtoService;
+	
+//	@Autowired
+//	DetalhesPedidoService detalhesPedidoService;
 
-	public DetalhesPedidoEntity toEntity(DetalhesPedidoDTORequest dto) {
+	public DetalhesPedidoEntity toEntity(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		DetalhesPedidoEntity entity = new DetalhesPedidoEntity();
 
-		ProdutoEntity entityProduto = new ProdutoEntity();
-		entityProduto.setId(dto.getIdProduto());
+		ProdutoEntity entityProduto = produtoService.getById(dto.getIdProduto());
 
 		entity.setProduto(entityProduto);
 		entity.setQuantidade(dto.getQuantidade());
+		entity.setPreco(entityProduto.getPreco());
 
 		return entity;
 	}

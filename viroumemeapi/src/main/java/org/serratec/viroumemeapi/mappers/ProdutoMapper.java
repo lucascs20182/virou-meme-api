@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProdutoMapper {
-	
+
 	@Autowired
 	CategoriaService categoriaService;
 
 	public ProdutoEntity toEntity(ProdutoDTORequest dto) throws ItemNotFoundException {
 		ProdutoEntity entity = new ProdutoEntity();
-		
-		if(dto.getCategoriaId() != null) {
+
+		if (dto.getCategoriaId() != null) {
 			CategoriaEntity entityCategoria = categoriaService.getById(dto.getCategoriaId());
-			
+
 			entity.setCategoria(entityCategoria);
 		}
 
@@ -41,8 +41,8 @@ public class ProdutoMapper {
 		dto.setPreco(entity.getPreco());
 		dto.setQuantidadeEmEstoque(entity.getQuantidadeEmEstoque());
 		dto.setDataCadastro(entity.getDataCadastro());
-		
-		if(entity.getCategoria() != null) {
+
+		if (entity.getCategoria() != null) {
 			dto.setIdCategoria(entity.getCategoria().getId());
 		}
 

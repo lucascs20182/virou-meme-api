@@ -27,9 +27,6 @@ public class PedidoMapper {
 	@Autowired
 	ProdutoService produtoService;
 
-//	@Autowired
-//	DetalhesPedidoService serverDetalhesPedido;
-
 	public PedidoEntity toEntity(PedidoDTORequest dto) throws ItemNotFoundException {
 		PedidoEntity entity = new PedidoEntity();
 
@@ -64,7 +61,7 @@ public class PedidoMapper {
 		}
 
 		dto.setIdDoClienteQueFezPedido(entity.getCliente().getId());
-		
+
 		dto.setProdutosDoPedido(listaDetalhesDosPedidos);
 
 		return dto;

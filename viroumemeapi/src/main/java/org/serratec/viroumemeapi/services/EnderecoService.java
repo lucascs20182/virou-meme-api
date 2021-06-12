@@ -23,7 +23,7 @@ public class EnderecoService {
 
 	@Autowired
 	EnderecoMapper enderecoMapper;
-	
+
 	@Autowired
 	ClienteService clienteService;
 
@@ -53,7 +53,7 @@ public class EnderecoService {
 		if (dto.getCep() != null) {
 			endereco.setCep(dto.getCep());
 		}
-		
+
 		if (dto.getNumero() != null) {
 			endereco.setNumero(dto.getNumero());
 		}

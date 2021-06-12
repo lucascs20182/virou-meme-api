@@ -11,12 +11,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DetalhesPedidoMapper {
-	
+
 	@Autowired
 	ProdutoService produtoService;
-	
-//	@Autowired
-//	DetalhesPedidoService detalhesPedidoService;
 
 	public DetalhesPedidoEntity toEntity(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		DetalhesPedidoEntity entity = new DetalhesPedidoEntity();

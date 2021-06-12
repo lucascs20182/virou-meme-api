@@ -31,12 +31,9 @@ public class PedidoService {
 
 	@Autowired
 	PedidoMapper pedidoMapper;
-	
+
 	@Autowired
 	ProdutoService produtoService;
-
-//	@Autowired
-//	DetalhesPedidoService detalhesPedidoService;
 
 	@Autowired
 	DetalhesPedidoMapper detalhesPedidoMapper;
@@ -55,7 +52,6 @@ public class PedidoService {
 		return pedido.get();
 	}
 
-//	@Transactional
 	public PedidoEntity create(PedidoDTORequest dto) throws ItemNotFoundException {
 		PedidoEntity entity = pedidoMapper.toEntity(dto);
 
@@ -66,7 +62,8 @@ public class PedidoService {
 		entity.setDataQuePedidoFoiFeito(LocalDate.now());
 
 		entity.setDataEntrega(LocalDate.now().plusDays(15));
-		
+
+		// salva a entity incompleta para referenciar na criação dos detalhes do pedido
 		pedidoRepository.save(entity);
 
 		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
@@ -81,20 +78,17 @@ public class PedidoService {
 
 			produtosDoPedido.add(produtoDoPedido);
 		}
-		
-		System.out.println("valor: " + produtosDoPedido.get(0));
 
 		entity.setProdutosDoPedido(produtosDoPedido);
-		pedidoRepository.save(entity);
 
 		// preenche pedidosDoProduto no ProdutoEntity
 		for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
 			DetalhesPedidoEntity detalhesPedidoEntity = detalhesPedidoMapper.toEntity(detalhesPedido);
-			
+
 			ProdutoEntity produto = produtoService.getById(detalhesPedido.getIdProduto());
-	
+
 			List<DetalhesPedidoEntity> pedidosComEsseProduto = produto.getPedidosDoProduto();
-	
+
 			pedidosComEsseProduto.add(detalhesPedidoEntity);
 
 			produto.setPedidosDoProduto(pedidosComEsseProduto);

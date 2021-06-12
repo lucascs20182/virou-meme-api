@@ -55,7 +55,7 @@ public class DetalhesPedidoService {
 		detalhesPedidoRepository.save(entity);
 		
 		// recalcula valorTotal e dataEntrega
-		pedidoService.update(dto.getIdPedido());
+		pedidoService.update(entity.getPedido().getId());
 
 		return entity;
 	}
@@ -78,8 +78,8 @@ public class DetalhesPedidoService {
 		
 		detalhesPedidoRepository.save(entity);
 		
-		// PODE SER AQUI O PROBLEMA 
-		pedidoService.update(dto.getIdPedido());
+		// PODE SER AQUI O PROBLEMA ok
+		pedidoService.update(entity.getPedido().getId());
 
 		return entity;
 	}

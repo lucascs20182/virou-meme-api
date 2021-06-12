@@ -6,6 +6,7 @@ import java.util.List;
 import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.dtos.EnderecoDTOResponse;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.EnderecoMapper;
 import org.serratec.viroumemeapi.services.EnderecoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,35 +28,35 @@ public class EnderecoController {
 	EnderecoService service;
 
 	@Autowired
-	EnderecoMapper enderecoMapper;
+	EnderecoMapper mapper;
 
 	@GetMapping
 	public ResponseEntity<List<EnderecoDTOResponse>> getAll() {
 		List<EnderecoDTOResponse> listaEnderecosResponse = new ArrayList<EnderecoDTOResponse>();
 
 		for (EnderecoEntity endereco : service.getAll()) {
-			listaEnderecosResponse.add(enderecoMapper.toDto(endereco));
+			listaEnderecosResponse.add(mapper.toDto(endereco));
 		}
 
 		return new ResponseEntity<List<EnderecoDTOResponse>>(listaEnderecosResponse, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<EnderecoDTOResponse> getById(@PathVariable Long id) {
-		EnderecoDTOResponse enderecoResponse = enderecoMapper.toDto(service.getById(id));
+	public ResponseEntity<EnderecoDTOResponse> getById(@PathVariable Long id) throws ItemNotFoundException {
+		EnderecoDTOResponse enderecoResponse = mapper.toDto(service.getById(id));
 
 		return new ResponseEntity<EnderecoDTOResponse>(enderecoResponse, HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<String> create(@RequestBody EnderecoDTORequest endereco) {
-		enderecoMapper.toDto(service.create(endereco));
+	public ResponseEntity<String> create(@RequestBody EnderecoDTORequest endereco) throws ItemNotFoundException {
+		mapper.toDto(service.create(endereco));
 
 		return new ResponseEntity<String>("Endereço cadastrado com sucesso", HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> delete(@PathVariable Long id) {
+	public ResponseEntity<String> delete(@PathVariable Long id) throws ItemNotFoundException {
 		service.delete(id);
 		
 		return new ResponseEntity<String>("Endereço deletado com sucesso", HttpStatus.OK);

@@ -4,16 +4,21 @@ import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.dtos.EnderecoDTOResponse;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.services.ClienteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EnderecoMapper {
 
-	public EnderecoEntity toEntity(EnderecoDTORequest dto) {
+	@Autowired
+	ClienteService clienteService;
+
+	public EnderecoEntity toEntity(EnderecoDTORequest dto) throws ItemNotFoundException {
 		EnderecoEntity entity = new EnderecoEntity();
 
-		ClienteEntity entityCliente = new ClienteEntity();
-		entityCliente.setId(dto.getClienteId());
+		ClienteEntity entityCliente = clienteService.getById(dto.getClienteId());
 
 		entity.setCep(dto.getCep());
 		entity.setNumero(dto.getNumero());

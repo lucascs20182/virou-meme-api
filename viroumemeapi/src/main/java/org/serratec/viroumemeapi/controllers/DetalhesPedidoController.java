@@ -54,6 +54,9 @@ public class DetalhesPedidoController {
 		return new ResponseEntity<String>("Detalhe de pedido cadastrado com sucesso", HttpStatus.CREATED);
 	}
 
+	// funciona mas tem que passar "idPedido" no body
+	// lembrar de debuggar onde estuo exigindo o id do pedido 
+	// para então recuperar o idPedido a partir do id do detalhe do pedido
 	@PutMapping("/{id}")
 	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody DetalhesPedidoDTORequest dto)
 			throws ItemNotFoundException {

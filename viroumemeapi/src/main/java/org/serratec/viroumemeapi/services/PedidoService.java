@@ -62,11 +62,8 @@ public class PedidoService {
 
 		entity.setDataEntrega(LocalDate.now().plusDays(15));
 
-		// salva a entity incompleta para referenciar na criação dos detalhes do pedido
+		// salva a entity incompleta para referenciá-la na criação dos detalhes do pedido
 		entity = pedidoRepository.save(entity);
-		
-		System.out.println("valorId1" + entity.getId());
-		System.out.println("valorbla1" + entity.getProdutosDoPedido());
 
 		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
 
@@ -86,39 +83,10 @@ public class PedidoService {
 		}
 
 		entity.setProdutosDoPedido(produtosDoPedido);
-
-		// preenche pedidosDoProduto no ProdutoEntity
-//		for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
-//			DetalhesPedidoEntity detalhesPedidoEntity = detalhesPedidoMapper.toEntity(detalhesPedido);
-//
-//			ProdutoEntity produto = produtoService.getById(detalhesPedido.getIdProduto());
-//
-//			List<DetalhesPedidoEntity> pedidosComEsseProduto = produto.getPedidosDoProduto();
-//
-//			pedidosComEsseProduto.add(detalhesPedidoEntity);
-//
-//			produto.setPedidosDoProduto(pedidosComEsseProduto);
-//		}
-		
-		// salva a entity incompleta para calcular o valorTotal
-//		entity = pedidoRepository.save(entity);
-
-//		Double valorTotal = 0.0;
-//
-//		// provável erro aqui
-//		// calcula o valorTotal
-//		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
-//			valorTotal += detalhesPedido.getPreco() * detalhesPedido.getQuantidade();
-//		}
-//
-//		entity.setValorTotal(valorTotal);
 		
 		entity = pedidoRepository.save(entity);
-		
-		System.out.println("valorId2" + entity.getId());
-		System.out.println("valorbla2" + entity.getProdutosDoPedido());
 
-		// atualiza o pedido calculando valorTotal etc.
+		// atualiza o pedido calculando valorTotal e dataEntrega
 		return this.update(entity.getId());
 	}
 
@@ -129,8 +97,8 @@ public class PedidoService {
 			throw new ItemNotFoundException("Pedido finalizado não pode ser alterado.");
 		}
 		
-		// criando o pedido imbutido de detalhes do pedido
-		// caso não entre no if o detalhe do pedido está sendo criado depois
+		// identifica se o pedido está sendo criado com detalhes do pedido embutido 
+		// nesse caso já está sendo atualizado na criação, que também chama o método update
 		if(entity.getProdutosDoPedido() == null) {
 			return pedidoRepository.save(entity);
 		}
@@ -166,7 +134,7 @@ public class PedidoService {
 		PedidoEntity entity = this.getById(id);
 
 		if (entity.getStatus() != StatusPedido.NAO_FINALIZADO) {
-			throw new ItemNotFoundException("Pedido finalizado não pode ser alterado.");
+			throw new ItemNotFoundException("O status do pedido já é finalizado.");
 		}
 
 		LocalDate dataQuePedidoFoiFinalizado = LocalDate.now();
@@ -186,6 +154,7 @@ public class PedidoService {
 		}
 
 		// todos os detalhes do pedido devem ser deletados ao deletar o pedido
+		// não testado
 		if (entity.getProdutosDoPedido() != null) {
 			for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
 				detalhesPedidoService.delete(detalhesPedido.getId());

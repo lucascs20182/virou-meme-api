@@ -2,6 +2,8 @@ package org.serratec.viroumemeapi.dtos;
 
 public class DetalhesPedidoDTOResponse {
 
+	private Long id;
+	
 	private Long idPedido;
 
 	private Long idProduto;
@@ -9,6 +11,14 @@ public class DetalhesPedidoDTOResponse {
 	private Integer quantidadeProdutos;
 
 	private Double precoDoProduto;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getIdProduto() {
 		return idProduto;

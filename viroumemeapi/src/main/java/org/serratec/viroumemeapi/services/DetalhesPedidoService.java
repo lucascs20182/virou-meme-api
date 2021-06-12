@@ -42,10 +42,10 @@ public class DetalhesPedidoService {
 		return pedido.get();
 	}
 
-	// quando for criado também tem que atualizar
 	public DetalhesPedidoEntity create(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		DetalhesPedidoEntity entity = detalhesPedidoMapper.toEntity(dto);
 
+		// PODE SER AQUI O PROBLEMA 
 		PedidoEntity pedido = pedidoService.getById(dto.getIdPedido());
 
 		if (pedido.getStatus() != StatusPedido.NAO_FINALIZADO) {
@@ -54,13 +54,12 @@ public class DetalhesPedidoService {
 
 		detalhesPedidoRepository.save(entity);
 		
+		// recalcula valorTotal e dataEntrega
 		pedidoService.update(dto.getIdPedido());
 
 		return entity;
 	}
 
-	// toda vez que um detalhe de pedido for editado
-	// os cálculos do pedido devem ser atualizados
 	public DetalhesPedidoEntity update(Long id, DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 
 		DetalhesPedidoEntity entity = this.getById(id);
@@ -78,6 +77,8 @@ public class DetalhesPedidoService {
 		}
 		
 		detalhesPedidoRepository.save(entity);
+		
+		// PODE SER AQUI O PROBLEMA 
 		pedidoService.update(dto.getIdPedido());
 
 		return entity;

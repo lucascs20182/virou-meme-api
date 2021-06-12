@@ -23,10 +23,18 @@ public class DetalhesPedidoMapper {
 	public DetalhesPedidoEntity toEntity(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
 		DetalhesPedidoEntity entity = new DetalhesPedidoEntity();
 
-		PedidoEntity entityPedido = pedidoService.getById(dto.getIdPedido());
+		// idPedido pode não ter seu valor passado no dto
+		// em casos como da criação no próprio pedido ou edição do detalhe do pedido
+		// na edição do detalhe do pedido já temos acesso ao id do detalhe do pedido
+		if(dto.getIdPedido() != null) {
+			PedidoEntity entityPedido = pedidoService.getById(dto.getIdPedido());
+			
+			entity.setPedido(entityPedido);
+		}
+		
 		ProdutoEntity entityProduto = produtoService.getById(dto.getIdProduto());
 
-		entity.setPedido(entityPedido);
+		
 		entity.setProduto(entityProduto);
 		entity.setQuantidade(dto.getQuantidade());
 		entity.setPreco(entityProduto.getPreco());
@@ -37,6 +45,7 @@ public class DetalhesPedidoMapper {
 	public DetalhesPedidoDTOResponse toDto(DetalhesPedidoEntity entity) {
 		DetalhesPedidoDTOResponse dto = new DetalhesPedidoDTOResponse();
 
+		dto.setId(entity.getId());
 		dto.setIdPedido(entity.getPedido().getId());
 		dto.setIdProduto(entity.getProduto().getId());
 		dto.setPrecoDoProduto(entity.getPreco());

@@ -51,7 +51,7 @@ public class EnderecoController {
 
 	@PostMapping
 	public ResponseEntity<String> create(@RequestBody EnderecoDTORequest endereco) throws ItemNotFoundException {
-		mapper.toDto(service.create(endereco));
+		service.create(endereco);
 
 		return new ResponseEntity<String>("Endereço cadastrado com sucesso", HttpStatus.CREATED);
 	}

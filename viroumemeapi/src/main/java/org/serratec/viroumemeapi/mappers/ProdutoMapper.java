@@ -4,23 +4,30 @@ import org.serratec.viroumemeapi.dtos.ProdutoDTORequest;
 import org.serratec.viroumemeapi.dtos.ProdutoDTOResponse;
 import org.serratec.viroumemeapi.entities.CategoriaEntity;
 import org.serratec.viroumemeapi.entities.ProdutoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.services.CategoriaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProdutoMapper {
+	
+	@Autowired
+	CategoriaService categoriaService;
 
-	public ProdutoEntity toEntity(ProdutoDTORequest dto) {
+	public ProdutoEntity toEntity(ProdutoDTORequest dto) throws ItemNotFoundException {
 		ProdutoEntity entity = new ProdutoEntity();
-
-		CategoriaEntity entityCategoria = new CategoriaEntity();
-		entityCategoria.setId(dto.getCategoriaId());
+		
+		if(dto.getCategoriaId() != null) {
+			CategoriaEntity entityCategoria = categoriaService.getById(dto.getCategoriaId());
+			
+			entity.setCategoria(entityCategoria);
+		}
 
 		entity.setNome(dto.getNome());
 		entity.setDescricao(dto.getDescricao());
 		entity.setPreco(dto.getPreco());
 		entity.setQuantidadeEmEstoque(dto.getQuantidadeEmEstoque());
-
-		entity.setCategoria(entityCategoria);
 
 		return entity;
 	}
@@ -34,7 +41,10 @@ public class ProdutoMapper {
 		dto.setPreco(entity.getPreco());
 		dto.setQuantidadeEmEstoque(entity.getQuantidadeEmEstoque());
 		dto.setDataCadastro(entity.getDataCadastro());
-		dto.setIdCategoria(entity.getCategoria().getId());
+		
+		if(entity.getCategoria() != null) {
+			dto.setIdCategoria(entity.getCategoria().getId());
+		}
 
 		return dto;
 	}

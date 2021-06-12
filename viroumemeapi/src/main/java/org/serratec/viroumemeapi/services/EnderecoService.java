@@ -44,7 +44,7 @@ public class EnderecoService {
 	public EnderecoEntity create(EnderecoDTORequest endereco) throws ItemNotFoundException {
 		EnderecoEntity entity = enderecoMapper.toEntity(endereco);
 
-		clienteRepository.save(entity.getCliente());
+//		clienteRepository.save(entity.getCliente());
 
 		return enderecoRepository.save(entity);
 	}

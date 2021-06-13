@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 public class ClienteController {
 
@@ -32,6 +34,7 @@ public class ClienteController {
 	@Autowired
 	ClienteMapper mapper;
 
+	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping("/cliente")
 	public ResponseEntity<List<ClienteDTOResponse>> getAll() {
 		List<ClienteDTOResponse> listaClientesResponse = new ArrayList<ClienteDTOResponse>();

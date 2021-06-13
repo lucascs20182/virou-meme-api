@@ -2,6 +2,7 @@ package org.serratec.viroumemeapi.config;
 
 import org.serratec.viroumemeapi.security.AuthService;
 import org.serratec.viroumemeapi.security.JWTAutheticationFilter;
+import org.serratec.viroumemeapi.security.JWTAuthorizationFilter;
 import org.serratec.viroumemeapi.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,15 +25,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	JWTUtil jwtUtil;
 
-	private static final String[] AUTH_WHITLIST = { "/**" };
+	private static final String[] AUTH_WHITELIST = { "/swagger-ui/**", "/create", "/categoria/**", "/produto/**",
+			"/v3/api-docs/**" };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers(AUTH_WHITLIST).permitAll().anyRequest().authenticated();
+		http.authorizeRequests()
+//		.antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
+				.antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated();
 		http.addFilterBefore(new JWTAutheticationFilter(authenticationManager(), jwtUtil),
 				UsernamePasswordAuthenticationFilter.class);
-		http.addFilterBefore(new JWTAutheticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
@@ -45,5 +49,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(service).passwordEncoder(bCryptPasswordEncoder());
 	}
-
 }

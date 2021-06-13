@@ -81,10 +81,6 @@ public class EnderecoService {
 			endereco.setEstado(viaCep.getUf());
 		}
 
-		if (dto.getCep() != null) {
-			endereco.setCep(dto.getCep());
-		}
-
 		if (dto.getNumero() != null) {
 			endereco.setNumero(dto.getNumero());
 		}

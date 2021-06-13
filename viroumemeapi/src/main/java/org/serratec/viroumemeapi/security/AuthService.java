@@ -1,7 +1,5 @@
 package org.serratec.viroumemeapi.security;
 
-import java.util.Optional;
-
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +9,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthService implements UserDetailsService{
 
 	@Autowired
 	ClienteRepository repository;
-
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<ClienteEntity> cliente = repository.findByUsername(username);
-		if (cliente.isEmpty()) {
-			System.out.println("Cliente Not Found");
+		ClienteEntity client = repository.findByUsername(username);
+		if(client == null) {
+			System.out.println("Usuario não existe");
 			return null;
 		}
-		return new UserSS(cliente.get().getId(), cliente.get().getUsername(), cliente.get().getSenha());
+		return new UserSS(client.getId(),client.getUsername(),client.getSenha());
 	}
 
 }

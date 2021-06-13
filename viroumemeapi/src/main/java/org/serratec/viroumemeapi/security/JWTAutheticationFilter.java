@@ -23,40 +23,32 @@ public class JWTAutheticationFilter extends UsernamePasswordAuthenticationFilter
 
 	private JWTUtil jwtUtil;
 
-	public JWTAutheticationFilter() {
-	}
-
 	public JWTAutheticationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+		super();
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
-	}
-
-	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-			Authentication authentication) throws IOException, ServletException {
-		String username = ((UserSS) authentication.getPrincipal()).getUsername();
-		String id = ((UserSS) authentication.getPrincipal()).getId().toString();
-		String token = jwtUtil.generateToken(username);
-
-		System.out.println(token);
-
-		response.addHeader("Authorization", "Bearer " + token);
-		response.addHeader("Client_id", id);
 	}
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		try {
-			ClienteEntity cliente = new ObjectMapper().readValue(request.getInputStream(), ClienteEntity.class);
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-					cliente.getUsername(), cliente.getSenha(), new ArrayList<>());
-			Authentication authentication = authenticationManager.authenticate(authenticationToken);
-			return authentication;
+			ClienteEntity creds = new ObjectMapper().readValue(request.getInputStream(), ClienteEntity.class);
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(creds.getUsername(),
+					creds.getSenha(), new ArrayList<>());
+			Authentication auth = authenticationManager.authenticate(authToken);
+			return auth;
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+			Authentication auth) throws IOException, ServletException {
+		String username = ((UserSS) auth.getPrincipal()).getUsername();
+		String token = jwtUtil.generateToken(username);
+		response.addHeader("Authorization", "Bearer " + token);
 	}
 
 }

@@ -15,6 +15,7 @@ import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.ClienteMapper;
 import org.serratec.viroumemeapi.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +29,9 @@ public class ClienteService {
 
 	@Autowired
 	EnderecoService enderecoService;
+
+	@Autowired
+	BCryptPasswordEncoder bCrypt;
 
 	public List<ClienteEntity> getAll() {
 		return clienteRepository.findAll();
@@ -46,6 +50,8 @@ public class ClienteService {
 	public ClienteEntity create(ClienteDTORequest dto)
 			throws ItemNotFoundException, AddressNotAssociatedWithClientException, ItemAlreadyExistsException {
 		ClienteEntity entity = clienteMapper.toEntity(dto);
+
+		entity.setSenha(bCrypt.encode(dto.getSenha()));
 
 		clienteRepository.save(entity);
 
@@ -93,7 +99,7 @@ public class ClienteService {
 		}
 
 		if (dto.getSenha() != null) {
-			entity.setSenha(dto.getSenha());
+			entity.setSenha(bCrypt.encode(dto.getSenha()));
 		}
 
 		if (dto.getNome() != null) {

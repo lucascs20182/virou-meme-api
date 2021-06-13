@@ -1,5 +1,16 @@
 package org.serratec.viroumemeapi.enums;
 
 public enum StatusPedido {
-	FINALIZADO, NAO_FINALIZADO;
+	FINALIZADO("Finalizado"), NAO_FINALIZADO("Não finalizado");
+
+	private String valorDoStatus;
+
+	private StatusPedido(String valorDoStatus) {
+		this.valorDoStatus = valorDoStatus;
+	}
+
+	public String getValorDoStatus() {
+		return valorDoStatus;
+	}
+
 }

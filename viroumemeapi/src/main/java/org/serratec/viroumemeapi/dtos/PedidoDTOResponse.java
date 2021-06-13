@@ -3,8 +3,6 @@ package org.serratec.viroumemeapi.dtos;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.serratec.viroumemeapi.enums.StatusPedido;
-
 public class PedidoDTOResponse {
 	private Long id;
 
@@ -16,7 +14,7 @@ public class PedidoDTOResponse {
 
 	private LocalDate dataEntrega;
 
-	private StatusPedido status;
+	private String status;
 
 	private List<DetalhesPedidoDTOResponse> produtosDoPedido;
 
@@ -62,11 +60,11 @@ public class PedidoDTOResponse {
 		this.dataEntrega = dataEntrega;
 	}
 
-	public StatusPedido getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(StatusPedido status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

@@ -52,7 +52,7 @@ public class PedidoMapper {
 		dto.setValorTotal(entity.getValorTotal());
 		dto.setDataQuePedidoFoiFeito(entity.getDataQuePedidoFoiFeito());
 		dto.setDataEntrega(entity.getDataEntrega());
-		dto.setStatus(entity.getStatus());
+		dto.setStatus(entity.getStatus().getValorDoStatus());
 
 		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
 			DetalhesPedidoDTOResponse dtoDetalhesPedido = mapperDetalhesPedido.toDto(detalhesPedido);

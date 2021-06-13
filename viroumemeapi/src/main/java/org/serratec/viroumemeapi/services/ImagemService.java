@@ -13,10 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ImagemService {
-	
+
 	@Autowired
 	ImagemRepository repository;
-	
+
 	@Transactional
 	public ImagemEntity create(ProdutoEntity produtoEntity, MultipartFile multipartFile) throws IOException {
 		ImagemEntity imageProduto = new ImagemEntity();
@@ -26,7 +26,7 @@ public class ImagemService {
 		imageProduto.setNome(produtoEntity.getNome().replace(" ", "-") + "-img");
 		return repository.save(imageProduto);
 	}
-	
+
 	@Transactional
 	public ImagemEntity getImagem(Long id) {
 		ImagemEntity image = repository.findByProdutoId(id);

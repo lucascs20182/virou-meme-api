@@ -65,7 +65,7 @@ public class ProdutoService {
 	public ProdutoEntity create(ProdutoDTORequest dto, MultipartFile multipartFile)
 			throws ItemNotFoundException, IOException {
 		ProdutoEntity entity = produtoMapper.toEntity(dto);
-		
+
 		entity.setDataCadastro(LocalDate.now());
 
 		ProdutoEntity produtoEntity = produtoRepository.save(entity);

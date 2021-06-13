@@ -37,7 +37,7 @@ public class ProdutoController {
 
 	@Autowired
 	ProdutoMapper mapper;
-	
+
 	@Autowired
 	ImagemService imagemService;
 
@@ -65,9 +65,9 @@ public class ProdutoController {
 
 		return new ResponseEntity<ProdutoDTOResponse>(produtoResponse, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{produtoId}/image")
-	public ResponseEntity<byte[]> getImagem(@PathVariable Long produtoId){
+	public ResponseEntity<byte[]> getImagem(@PathVariable Long produtoId) {
 		ImagemEntity imagem = imagemService.getImagem(produtoId);
 		HttpHeaders header = new HttpHeaders();
 		header.add("content-length", String.valueOf(imagem.getData().length));

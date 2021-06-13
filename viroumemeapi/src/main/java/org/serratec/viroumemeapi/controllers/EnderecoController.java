@@ -6,6 +6,7 @@ import java.util.List;
 import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.dtos.EnderecoDTOResponse;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.EnderecoMapper;
 import org.serratec.viroumemeapi.services.EnderecoService;
@@ -50,7 +51,8 @@ public class EnderecoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> create(@RequestBody EnderecoDTORequest endereco) throws ItemNotFoundException {
+	public ResponseEntity<String> create(@RequestBody EnderecoDTORequest endereco)
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
 		service.create(endereco);
 
 		return new ResponseEntity<String>("Endereço cadastrado com sucesso", HttpStatus.CREATED);

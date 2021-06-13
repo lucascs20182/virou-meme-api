@@ -12,6 +12,8 @@ import org.serratec.viroumemeapi.entities.PedidoEntity;
 import org.serratec.viroumemeapi.entities.ProdutoEntity;
 import org.serratec.viroumemeapi.enums.StatusPedido;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
+import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
 import org.serratec.viroumemeapi.mappers.DetalhesPedidoMapper;
 import org.serratec.viroumemeapi.mappers.PedidoMapper;
 import org.serratec.viroumemeapi.repositories.PedidoRepository;
@@ -51,7 +53,8 @@ public class PedidoService {
 		return pedido.get();
 	}
 
-	public PedidoEntity create(PedidoDTORequest dto) throws ItemNotFoundException {
+	public PedidoEntity create(PedidoDTORequest dto)
+			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
 		PedidoEntity entity = pedidoMapper.toEntity(dto);
 
 		entity.setNumeroPedido(new NumberGenerator().generate());
@@ -98,9 +101,11 @@ public class PedidoService {
 			throw new ItemNotFoundException("Pedido finalizado não pode ser alterado.");
 		}
 
-		// identifica se o pedido está sendo criado com detalhes do pedido embutido
-		// nesse caso já está sendo atualizado na criação, que também chama o método
-		// update
+		/*
+		 * identifica se o pedido está sendo criado com detalhes do pedido embutido
+		 * nesse caso já está sendo atualizado na criação, que também chama o método
+		 * update
+		 */
 		if (entity.getProdutosDoPedido() == null) {
 			return pedidoRepository.save(entity);
 		}
@@ -132,11 +137,24 @@ public class PedidoService {
 		return pedidoRepository.save(entity);
 	}
 
-	public PedidoEntity updateStatus(Long id) throws ItemNotFoundException {
+	public PedidoEntity updateStatus(Long id) throws ItemNotFoundException, ProductStockLessThanRequestedException {
 		PedidoEntity entity = this.getById(id);
 
 		if (entity.getStatus() != StatusPedido.NAO_FINALIZADO) {
 			throw new ItemNotFoundException("O status do pedido já é finalizado.");
+		}
+
+		for (DetalhesPedidoEntity detalhesPedido : entity.getProdutosDoPedido()) {
+			if (detalhesPedido.getQuantidade() > detalhesPedido.getProduto().getQuantidadeEmEstoque()) {
+				throw new ProductStockLessThanRequestedException(
+						"Não há quantidade suficiente no estoque do produto para este pedido.");
+			} else {
+				Integer quantidadeNoEstoqueAtualizada = detalhesPedido.getProduto().getQuantidadeEmEstoque()
+						- detalhesPedido.getQuantidade();
+
+				produtoService.updateQuantidadeEmEstoque(detalhesPedido.getProduto().getId(),
+						quantidadeNoEstoqueAtualizada);
+			}
 		}
 
 		LocalDate dataQuePedidoFoiFinalizado = LocalDate.now();

@@ -6,6 +6,7 @@ import java.util.List;
 import org.serratec.viroumemeapi.dtos.ClienteDTORequest;
 import org.serratec.viroumemeapi.dtos.ClienteDTOResponse;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
+import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.ClienteMapper;
@@ -49,7 +50,8 @@ public class ClienteController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<String> create(@RequestBody ClienteDTORequest cliente) throws ItemNotFoundException {
+	public ResponseEntity<String> create(@RequestBody ClienteDTORequest cliente)
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
 
 		service.create(cliente);
 

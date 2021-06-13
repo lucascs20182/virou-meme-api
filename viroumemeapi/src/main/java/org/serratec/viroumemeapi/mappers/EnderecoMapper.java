@@ -4,6 +4,7 @@ import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.dtos.EnderecoDTOResponse;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,13 @@ public class EnderecoMapper {
 	@Autowired
 	ClienteService clienteService;
 
-	public EnderecoEntity toEntity(EnderecoDTORequest dto) throws ItemNotFoundException {
+	public EnderecoEntity toEntity(EnderecoDTORequest dto)
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
 		EnderecoEntity entity = new EnderecoEntity();
+
+		if (dto.getClienteId() == null) {
+			throw new AddressNotAssociatedWithClientException("Endereço precisa estar associado ao id de um cliente");
+		}
 
 		ClienteEntity entityCliente = clienteService.getById(dto.getClienteId());
 

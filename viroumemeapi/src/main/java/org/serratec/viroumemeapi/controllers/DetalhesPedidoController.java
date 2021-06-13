@@ -7,6 +7,8 @@ import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTOResponse;
 import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
+import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
 import org.serratec.viroumemeapi.mappers.DetalhesPedidoMapper;
 import org.serratec.viroumemeapi.services.DetalhesPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,8 @@ public class DetalhesPedidoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> create(@RequestBody DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
+	public ResponseEntity<String> create(@RequestBody DetalhesPedidoDTORequest dto)
+			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
 		service.create(dto);
 
 		return new ResponseEntity<String>("Detalhe de pedido cadastrado com sucesso", HttpStatus.CREATED);

@@ -8,6 +8,8 @@ import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
 import org.serratec.viroumemeapi.enums.StatusPedido;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
+import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
 import org.serratec.viroumemeapi.mappers.DetalhesPedidoMapper;
 import org.serratec.viroumemeapi.repositories.DetalhesPedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +44,10 @@ public class DetalhesPedidoService {
 		return pedido.get();
 	}
 
-	public DetalhesPedidoEntity create(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
+	public DetalhesPedidoEntity create(DetalhesPedidoDTORequest dto)
+			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
 		DetalhesPedidoEntity entity = detalhesPedidoMapper.toEntity(dto);
 
-		// PODE SER AQUI O PROBLEMA
 		PedidoEntity pedido = pedidoService.getById(dto.getIdPedido());
 
 		if (pedido.getStatus() != StatusPedido.NAO_FINALIZADO) {

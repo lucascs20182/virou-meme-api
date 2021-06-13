@@ -6,6 +6,8 @@ import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
 import org.serratec.viroumemeapi.entities.ProdutoEntity;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
+import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
 import org.serratec.viroumemeapi.services.PedidoService;
 import org.serratec.viroumemeapi.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,15 @@ public class DetalhesPedidoMapper {
 	@Autowired
 	PedidoService pedidoService;
 
-	public DetalhesPedidoEntity toEntity(DetalhesPedidoDTORequest dto) throws ItemNotFoundException {
+	public DetalhesPedidoEntity toEntity(DetalhesPedidoDTORequest dto)
+			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
 		DetalhesPedidoEntity entity = new DetalhesPedidoEntity();
 
-		// idPedido pode não ter seu valor passado no dto
-		// em casos como da criação no próprio pedido ou edição do detalhe do pedido
-		// na edição do detalhe do pedido já temos acesso ao id do detalhe do pedido
+		/*
+		 * idPedido pode não ter seu valor passado no dto em casos como da criação no
+		 * próprio pedido ou edição do detalhe do pedido na edição do detalhe do pedido
+		 * já temos acesso ao id do detalhe do pedido
+		 */
 		if (dto.getIdPedido() != null) {
 			PedidoEntity entityPedido = pedidoService.getById(dto.getIdPedido());
 
@@ -35,7 +40,18 @@ public class DetalhesPedidoMapper {
 		ProdutoEntity entityProduto = produtoService.getById(dto.getIdProduto());
 
 		entity.setProduto(entityProduto);
+
+		if (dto.getQuantidade() <= 0) {
+			throw new QuantityCannotBeZeroException("A quantidade do produto precisa ser maior do que zero.");
+		}
+
+		if (dto.getQuantidade() > entityProduto.getQuantidadeEmEstoque()) {
+			throw new ProductStockLessThanRequestedException(
+					"Não há quantidade suficiente no estoque do produto para este pedido.");
+		}
+
 		entity.setQuantidade(dto.getQuantidade());
+
 		entity.setPreco(entityProduto.getPreco());
 
 		return entity;

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.EnderecoMapper;
 import org.serratec.viroumemeapi.repositories.ClienteRepository;
@@ -41,7 +42,8 @@ public class EnderecoService {
 		return endereco.get();
 	}
 
-	public EnderecoEntity create(EnderecoDTORequest endereco) throws ItemNotFoundException {
+	public EnderecoEntity create(EnderecoDTORequest endereco)
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
 		EnderecoEntity entity = enderecoMapper.toEntity(endereco);
 
 		return enderecoRepository.save(entity);

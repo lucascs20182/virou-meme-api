@@ -46,6 +46,14 @@ public class ProdutoService {
 		return produtoRepository.save(entity);
 	}
 
+	public ProdutoEntity updateQuantidadeEmEstoque(Long id, Integer novaQuantidade) throws ItemNotFoundException {
+		ProdutoEntity entity = this.getById(id);
+
+		entity.setQuantidadeEmEstoque(novaQuantidade);
+
+		return produtoRepository.save(entity);
+	}
+
 	public ProdutoEntity update(Long id, ProdutoDTORequest dto) throws ItemNotFoundException {
 		ProdutoEntity entity = this.getById(id);
 

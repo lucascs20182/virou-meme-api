@@ -8,6 +8,8 @@ import org.serratec.viroumemeapi.dtos.PedidoDTOResponse;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
+import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
+import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
 import org.serratec.viroumemeapi.mappers.PedidoMapper;
 import org.serratec.viroumemeapi.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,16 +53,16 @@ public class PedidoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> create(@RequestBody PedidoDTORequest dto) throws ItemNotFoundException {
+	public ResponseEntity<String> create(@RequestBody PedidoDTORequest dto)
+			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
 		service.create(dto);
 
 		return new ResponseEntity<String>("Pedido cadastrado com sucesso", HttpStatus.CREATED);
 	}
 
-	// verificar nomenclatura; melhor finalização?
-	// note ex. de outras rotas: cadastro, login, endereço e outros substantivos
 	@PutMapping("/finalizar/{id}")
-	public ResponseEntity<String> update(@PathVariable Long id) throws ItemNotFoundException, CpfNotEditableException {
+	public ResponseEntity<String> update(@PathVariable Long id)
+			throws ItemNotFoundException, CpfNotEditableException, ProductStockLessThanRequestedException {
 		service.updateStatus(id);
 
 		return new ResponseEntity<String>("Pedido finalizado com sucesso", HttpStatus.OK);

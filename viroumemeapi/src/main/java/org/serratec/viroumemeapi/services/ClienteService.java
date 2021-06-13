@@ -8,6 +8,7 @@ import org.serratec.viroumemeapi.dtos.ClienteDTORequest;
 import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
+import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.ClienteMapper;
@@ -41,7 +42,8 @@ public class ClienteService {
 		return cliente.get();
 	}
 
-	public ClienteEntity create(ClienteDTORequest dto) throws ItemNotFoundException {
+	public ClienteEntity create(ClienteDTORequest dto)
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
 		ClienteEntity entity = clienteMapper.toEntity(dto);
 
 		clienteRepository.save(entity);

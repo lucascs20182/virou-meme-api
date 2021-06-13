@@ -1,5 +1,7 @@
 package org.serratec.viroumemeapi.services;
 
+import java.io.IOException;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,8 @@ import org.serratec.viroumemeapi.mappers.ProdutoMapper;
 import org.serratec.viroumemeapi.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class ProdutoService {
@@ -23,6 +27,9 @@ public class ProdutoService {
 
 	@Autowired
 	CategoriaService categoriaService;
+
+	@Autowired
+	ImagemService imagemService;
 
 	public List<ProdutoEntity> getAll() {
 		return produtoRepository.findAll();
@@ -38,12 +45,24 @@ public class ProdutoService {
 		return produto.get();
 	}
 
-	public ProdutoEntity create(ProdutoDTORequest dto) throws ItemNotFoundException {
-		ProdutoEntity entity = produtoMapper.toEntity(dto);
+	public ProdutoEntity getImagem(ProdutoEntity produtoEntity) {
+		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/produto/{produtoId}/image")
+				.buildAndExpand(produtoEntity.getId()).toUri();
+		produtoEntity.setUrlImagem(uri.toString());
+		return produtoEntity;
+	}
 
+	public ProdutoEntity create(ProdutoDTORequest dto, MultipartFile multipartFile)
+			throws ItemNotFoundException, IOException {
+		ProdutoEntity entity = produtoMapper.toEntity(dto);
+		
 		entity.setDataCadastro(LocalDate.now());
 
-		return produtoRepository.save(entity);
+		ProdutoEntity produtoEntity = produtoRepository.save(entity);
+
+		imagemService.create(produtoEntity, multipartFile);
+
+		return produtoRepository.save(getImagem(produtoEntity));
 	}
 
 	public ProdutoEntity updateQuantidadeEmEstoque(Long id, Integer novaQuantidade) throws ItemNotFoundException {

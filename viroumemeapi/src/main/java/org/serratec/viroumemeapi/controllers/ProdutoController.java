@@ -1,15 +1,19 @@
 package org.serratec.viroumemeapi.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.serratec.viroumemeapi.dtos.ProdutoDTORequest;
 import org.serratec.viroumemeapi.dtos.ProdutoDTOResponse;
+import org.serratec.viroumemeapi.entities.ImagemEntity;
 import org.serratec.viroumemeapi.entities.ProdutoEntity;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.ProdutoMapper;
+import org.serratec.viroumemeapi.services.ImagemService;
 import org.serratec.viroumemeapi.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/produto")
@@ -30,6 +37,9 @@ public class ProdutoController {
 
 	@Autowired
 	ProdutoMapper mapper;
+	
+	@Autowired
+	ImagemService imagemService;
 
 	@GetMapping
 	public ResponseEntity<List<ProdutoDTOResponse>> getAll() {
@@ -48,10 +58,20 @@ public class ProdutoController {
 
 		return new ResponseEntity<ProdutoDTOResponse>(produtoResponse, HttpStatus.OK);
 	}
+	
+	@GetMapping("/{produtoId}/image")
+	public ResponseEntity<byte[]> getImagem(@PathVariable Long produtoId){
+		ImagemEntity imagem = imagemService.getImagem(produtoId);
+		HttpHeaders header = new HttpHeaders();
+		header.add("content-length", String.valueOf(imagem.getData().length));
+		header.add("content-type", imagem.getMimeType());
+		return new ResponseEntity<>(imagem.getData(), header, HttpStatus.OK);
+	}
 
 	@PostMapping
-	public ResponseEntity<String> create(@RequestBody ProdutoDTORequest produto) throws ItemNotFoundException {
-		service.create(produto);
+	public ResponseEntity<String> create(@RequestParam MultipartFile file, @RequestPart ProdutoDTORequest produto)
+			throws ItemNotFoundException, IOException {
+		service.create(produto, file);
 
 		return new ResponseEntity<String>("Produto cadastrado com sucesso", HttpStatus.CREATED);
 	}

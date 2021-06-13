@@ -41,6 +41,7 @@ public class ProdutoMapper {
 		dto.setPreco(entity.getPreco());
 		dto.setQuantidadeEmEstoque(entity.getQuantidadeEmEstoque());
 		dto.setDataCadastro(entity.getDataCadastro());
+		dto.setUrl(entity.getUrlImagem());
 
 		if (entity.getCategoria() != null) {
 			dto.setIdCategoria(entity.getCategoria().getId());

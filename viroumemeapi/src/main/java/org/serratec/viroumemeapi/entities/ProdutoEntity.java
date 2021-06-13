@@ -9,7 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "Produto")
@@ -29,13 +32,17 @@ public class ProdutoEntity {
 
 	private LocalDate dataCadastro;
 
-	private String imagem;
-
 	@ManyToOne
 	private CategoriaEntity categoria;
 
+	private String urlImagem;
+
 	@OneToMany(mappedBy = "produto")
 	private List<DetalhesPedidoEntity> pedidosDoProduto;
+
+	@JsonIgnore
+	@OneToOne
+	private ImagemEntity imagem;
 
 	public Long getId() {
 		return id;
@@ -85,14 +92,6 @@ public class ProdutoEntity {
 		this.dataCadastro = dataCadastro;
 	}
 
-	public String getImagem() {
-		return imagem;
-	}
-
-	public void setImagem(String imagem) {
-		this.imagem = imagem;
-	}
-
 	public CategoriaEntity getCategoria() {
 		return categoria;
 	}
@@ -108,4 +107,21 @@ public class ProdutoEntity {
 	public void setPedidosDoProduto(List<DetalhesPedidoEntity> pedidosDoProduto) {
 		this.pedidosDoProduto = pedidosDoProduto;
 	}
+
+	public ImagemEntity getImagem() {
+		return imagem;
+	}
+
+	public void setImagem(ImagemEntity imagem) {
+		this.imagem = imagem;
+	}
+
+	public String getUrlImagem() {
+		return urlImagem;
+	}
+
+	public void setUrlImagem(String urlImagem) {
+		this.urlImagem = urlImagem;
+	}
+
 }

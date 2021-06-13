@@ -34,7 +34,7 @@ public class ExceptionsController {
 	@ExceptionHandler(PurchaseOrderWithNoProductException.class)
 	public ResponseEntity<String> handlePurchaseOrderWithNoProductException(
 			PurchaseOrderWithNoProductException exception) {
-		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 
 	@ExceptionHandler(CategoryReferencedByProductException.class)

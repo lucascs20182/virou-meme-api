@@ -7,6 +7,7 @@ import org.serratec.viroumemeapi.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,15 +26,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	JWTUtil jwtUtil;
 
-	private static final String[] AUTH_WHITELIST = { "/swagger-ui/**", "/create", "/categoria/**", "/produto/**",
+	private static final String[] AUTH_WHITLIST = { "/swagger-ui/**", "/create", "/categoria/**", "/produto/**",
 			"/v3/api-docs/**" };
+
+	private static final String[] AUTH_WHITLIST2 = { "/pedido/**" };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests()
-//		.antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
-				.antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated();
+		http.authorizeRequests().antMatchers(AUTH_WHITLIST).permitAll().antMatchers(HttpMethod.GET, AUTH_WHITLIST2)
+				.permitAll().antMatchers(HttpMethod.DELETE, AUTH_WHITLIST2).permitAll().anyRequest().authenticated();
 		http.addFilterBefore(new JWTAutheticationFilter(authenticationManager(), jwtUtil),
 				UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

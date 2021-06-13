@@ -40,28 +40,28 @@ public class ExceptionsController {
 	@ExceptionHandler(CategoryReferencedByProductException.class)
 	public ResponseEntity<String> handleCategoryReferencedByProductException(
 			CategoryReferencedByProductException exception) {
-		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 
 	@ExceptionHandler(ProductStockLessThanRequestedException.class)
 	public ResponseEntity<String> handleProductStockLessThanRequestedException(
 			ProductStockLessThanRequestedException exception) {
-		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 
 	@ExceptionHandler(QuantityCannotBeZeroException.class)
 	public ResponseEntity<String> handleQuantityCannotBeZeroException(QuantityCannotBeZeroException exception) {
-		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 
 	@ExceptionHandler(AddressNotAssociatedWithClientException.class)
 	public ResponseEntity<String> handleAddressNotAssociatedWithClientException(
 			AddressNotAssociatedWithClientException exception) {
-		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 
 	@ExceptionHandler(ItemAlreadyExistsException.class)
 	public ResponseEntity<String> handleItemAlreadyExistsException(ItemAlreadyExistsException exception) {
-		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 }

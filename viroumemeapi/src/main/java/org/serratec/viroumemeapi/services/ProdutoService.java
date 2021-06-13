@@ -45,6 +45,16 @@ public class ProdutoService {
 		return produto.get();
 	}
 
+	public ProdutoEntity getByName(String nome) throws ItemNotFoundException {
+		List<ProdutoEntity> produto = produtoRepository.findByNome(nome);
+
+		if (produto.isEmpty()) {
+			throw new ItemNotFoundException("Não existe produto com esse nome.");
+		}
+
+		return produto.get(0);
+	}
+
 	public ProdutoEntity getImagem(ProdutoEntity produtoEntity) {
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/produto/{produtoId}/image")
 				.buildAndExpand(produtoEntity.getId()).toUri();

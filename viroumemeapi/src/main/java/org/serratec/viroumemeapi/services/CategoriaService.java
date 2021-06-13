@@ -35,6 +35,17 @@ public class CategoriaService {
 		return categoria.get();
 	}
 
+	public CategoriaEntity getByName(String nome) throws ItemNotFoundException {
+		List<CategoriaEntity> categoria = categoriaRepository.findByNome(nome);
+
+		if (categoria.isEmpty()) {
+			throw new ItemNotFoundException("Não existe categoria com esse nome.");
+		}
+
+		// cada categoria tem um nome único
+		return categoria.get(0);
+	}
+
 	public CategoriaEntity create(CategoriaDTORequest dto) throws ItemNotFoundException {
 		CategoriaEntity entity = categoriaMapper.toEntity(dto);
 

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/pedido/detalhes")
 public class DetalhesPedidoController {
@@ -59,6 +61,7 @@ public class DetalhesPedidoController {
 		return new ResponseEntity<String>("Detalhe de pedido cadastrado com sucesso", HttpStatus.CREATED);
 	}
 
+	@SecurityRequirement(name = "bearerAuth")
 	@PutMapping("/{id}")
 	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody DetalhesPedidoDTORequest dto)
 			throws ItemNotFoundException {

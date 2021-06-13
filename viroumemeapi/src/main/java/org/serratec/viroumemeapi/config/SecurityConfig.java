@@ -31,11 +31,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] AUTH_WHITLIST2 = { "/pedido/**" };
 
+	private static final String[] AUTH_WHITLIST3 = { "/endereco/**" };
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.authorizeRequests().antMatchers(AUTH_WHITLIST).permitAll().antMatchers(HttpMethod.GET, AUTH_WHITLIST2)
-				.permitAll().antMatchers(HttpMethod.DELETE, AUTH_WHITLIST2).permitAll().anyRequest().authenticated();
+				.permitAll().antMatchers(HttpMethod.DELETE, AUTH_WHITLIST2).permitAll()
+				.antMatchers(HttpMethod.GET, AUTH_WHITLIST3).permitAll().antMatchers(HttpMethod.DELETE, AUTH_WHITLIST3)
+				.permitAll().antMatchers(HttpMethod.POST, AUTH_WHITLIST3).permitAll().anyRequest().authenticated();
 		http.addFilterBefore(new JWTAutheticationFilter(authenticationManager(), jwtUtil),
 				UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

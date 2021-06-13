@@ -34,7 +34,6 @@ public class ClienteController {
 	@Autowired
 	ClienteMapper mapper;
 
-	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping("/cliente")
 	public ResponseEntity<List<ClienteDTOResponse>> getAll() {
 		List<ClienteDTOResponse> listaClientesResponse = new ArrayList<ClienteDTOResponse>();
@@ -62,6 +61,7 @@ public class ClienteController {
 		return new ResponseEntity<String>("Cliente cadastrado com sucesso", HttpStatus.CREATED);
 	}
 
+	@SecurityRequirement(name = "bearerAuth")
 	@PutMapping("/cliente/{id}")
 	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ClienteDTORequest cliente)
 			throws ItemNotFoundException, CpfNotEditableException, ItemAlreadyExistsException {
@@ -70,6 +70,7 @@ public class ClienteController {
 		return new ResponseEntity<String>("Cliente editado com sucesso", HttpStatus.OK);
 	}
 
+	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping("/cliente/{id}")
 	public ResponseEntity<String> delete(@PathVariable Long id) throws ItemNotFoundException {
 		service.delete(id);

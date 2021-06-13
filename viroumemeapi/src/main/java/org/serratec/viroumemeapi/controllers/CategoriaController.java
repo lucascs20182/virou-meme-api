@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -43,9 +44,16 @@ public class CategoriaController {
 		return new ResponseEntity<List<CategoriaDTOResponse>>(listaCategoriasResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<CategoriaDTOResponse> getById(@PathVariable Long id) throws ItemNotFoundException {
-		CategoriaDTOResponse categoriaResponse = mapper.toDto(service.getById(id));
+//	@GetMapping("/{id}")
+//	public ResponseEntity<CategoriaDTOResponse> getById(@PathVariable Long id) throws ItemNotFoundException {
+//		CategoriaDTOResponse categoriaResponse = mapper.toDto(service.getById(id));
+//
+//		return new ResponseEntity<CategoriaDTOResponse>(categoriaResponse, HttpStatus.OK);
+//	}
+
+	@GetMapping("busca")
+	public ResponseEntity<CategoriaDTOResponse> getByName(@RequestParam String nome) throws ItemNotFoundException {
+		CategoriaDTOResponse categoriaResponse = mapper.toDto(service.getByName(nome));
 
 		return new ResponseEntity<CategoriaDTOResponse>(categoriaResponse, HttpStatus.OK);
 	}

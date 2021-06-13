@@ -10,6 +10,7 @@ import org.serratec.viroumemeapi.exceptions.PurchaseOrderNotEditableException;
 import org.serratec.viroumemeapi.exceptions.PurchaseOrderWithNoProductException;
 import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -62,6 +63,11 @@ public class ExceptionsController {
 
 	@ExceptionHandler(ItemAlreadyExistsException.class)
 	public ResponseEntity<String> handleItemAlreadyExistsException(ItemAlreadyExistsException exception) {
+		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException exception) {
 		return ResponseEntity.notFound().header("x-erro-msg", exception.getMessage()).build();
 	}
 }

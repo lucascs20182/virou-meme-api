@@ -62,6 +62,16 @@ public class PedidoService {
 		return pedido.get();
 	}
 
+	public PedidoEntity getByNumeroPedido(String numeroPedido) throws ItemNotFoundException {
+		List<PedidoEntity> pedido = pedidoRepository.findByNumeroPedido(numeroPedido);
+
+		if (pedido.isEmpty()) {
+			throw new ItemNotFoundException("Não existe pedido com esse número.");
+		}
+
+		return pedido.get(0);
+	}
+
 	public PedidoEntity create(PedidoDTORequest dto) throws ItemNotFoundException,
 			ProductStockLessThanRequestedException, QuantityCannotBeZeroException, ItemAlreadyExistsException {
 		PedidoEntity entity = pedidoMapper.toEntity(dto);

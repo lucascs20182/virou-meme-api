@@ -57,22 +57,21 @@ public class DetalhesPedidoService {
 			throw new ItemNotFoundException("Componentes de Pedido finalizado não podem ser alterados.");
 		}
 
-		// PROVAVEL ERRO
 		Set<Long> idsDosProdutosNoPedido = new HashSet<Long>();
 
 		if (pedido.getProdutosDoPedido() != null) {
 			Boolean isNotRepeated;
-			
+
 			for (DetalhesPedidoEntity detalhesPedido : pedido.getProdutosDoPedido()) {
 				isNotRepeated = idsDosProdutosNoPedido.add(detalhesPedido.getProduto().getId());
-	
+
 				if (!isNotRepeated) {
 					throw new ItemAlreadyExistsException("Produto já existente no pedido.");
 				}
 			}
-			
+
 			isNotRepeated = idsDosProdutosNoPedido.add(dto.getIdProduto());
-			
+
 			if (!isNotRepeated) {
 				throw new ItemAlreadyExistsException("Produto já existente no pedido.");
 			}

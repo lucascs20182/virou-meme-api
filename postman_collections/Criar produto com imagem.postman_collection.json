@@ -1,0 +1,51 @@
+{
+	"info": {
+		"_postman_id": "a4155a75-587f-401d-a963-6ac083a667b8",
+		"name": "Criar produto com imagem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Criar produto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Residencia Note 13/Pictures/algo.png"
+						},
+						{
+							"key": "produto",
+							"value": "{\n  \"nome\": \"camiseta manga longa RPG GG azul marinho\",\n  \"descricao\": \"camiseta masculina manga longa 100% algodão\",\n  \"preco\": 40,\n  \"quantidadeEmEstoque\": 20\n}",
+							"contentType": "application/json",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/produto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"produto"
+					],
+					"query": [
+						{
+							"key": "file",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

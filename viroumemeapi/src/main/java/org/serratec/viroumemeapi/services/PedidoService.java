@@ -2,8 +2,10 @@ package org.serratec.viroumemeapi.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.PedidoDTORequest;
@@ -11,6 +13,7 @@ import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
 import org.serratec.viroumemeapi.entities.ProdutoEntity;
 import org.serratec.viroumemeapi.enums.StatusPedido;
+import org.serratec.viroumemeapi.exceptions.ItemAlreadyExistsException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
 import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
@@ -53,8 +56,8 @@ public class PedidoService {
 		return pedido.get();
 	}
 
-	public PedidoEntity create(PedidoDTORequest dto)
-			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
+	public PedidoEntity create(PedidoDTORequest dto) throws ItemNotFoundException,
+			ProductStockLessThanRequestedException, QuantityCannotBeZeroException, ItemAlreadyExistsException {
 		PedidoEntity entity = pedidoMapper.toEntity(dto);
 
 		entity.setNumeroPedido(new NumberGenerator().generate());
@@ -68,6 +71,19 @@ public class PedidoService {
 		// salva a entity incompleta para referenciá-la na criação dos detalhes do
 		// pedido
 		entity = pedidoRepository.save(entity);
+
+		//PROVAVEL 
+		Set<Long> idsDosProdutosNoPedido = new HashSet<Long>();
+
+		if (dto.getProdutosDoPedido() != null) {
+			for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
+				Boolean isNotRepeated = idsDosProdutosNoPedido.add(detalhesPedido.getIdProduto());
+	
+				if (!isNotRepeated) {
+					throw new ItemAlreadyExistsException("Pedido com produto duplicado.");
+				}
+			}
+		}
 
 		List<DetalhesPedidoEntity> produtosDoPedido = new ArrayList<DetalhesPedidoEntity>();
 

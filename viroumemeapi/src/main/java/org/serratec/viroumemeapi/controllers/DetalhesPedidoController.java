@@ -6,6 +6,7 @@ import java.util.List;
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTOResponse;
 import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemAlreadyExistsException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
 import org.serratec.viroumemeapi.exceptions.QuantityCannotBeZeroException;
@@ -51,8 +52,8 @@ public class DetalhesPedidoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> create(@RequestBody DetalhesPedidoDTORequest dto)
-			throws ItemNotFoundException, ProductStockLessThanRequestedException, QuantityCannotBeZeroException {
+	public ResponseEntity<String> create(@RequestBody DetalhesPedidoDTORequest dto) throws ItemNotFoundException,
+			ProductStockLessThanRequestedException, QuantityCannotBeZeroException, ItemAlreadyExistsException {
 		service.create(dto);
 
 		return new ResponseEntity<String>("Detalhe de pedido cadastrado com sucesso", HttpStatus.CREATED);

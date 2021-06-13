@@ -29,7 +29,7 @@ public class ClienteMapper {
 			if (cliente.getCpf().equals(dto.getCpf())) {
 				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este CPF.");
 			}
-			
+
 			if (cliente.getEmail().equals(dto.getEmail())) {
 				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este e-mail.");
 			}

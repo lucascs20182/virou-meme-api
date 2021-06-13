@@ -9,15 +9,35 @@ import org.serratec.viroumemeapi.dtos.EnderecoDTORequest;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
+import org.serratec.viroumemeapi.exceptions.ItemAlreadyExistsException;
+import org.serratec.viroumemeapi.services.ClienteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClienteMapper {
 
-	public ClienteEntity toEntity(ClienteDTORequest dto) {
+	@Autowired
+	ClienteService service;
+
+	public ClienteEntity toEntity(ClienteDTORequest dto) throws ItemAlreadyExistsException {
 		ClienteEntity entity = new ClienteEntity();
 
 		List<EnderecoEntity> listaEnderecosDoCliente = new ArrayList<EnderecoEntity>();
+
+		for (ClienteEntity cliente : service.getAll()) {
+			if (cliente.getCpf().equals(dto.getCpf())) {
+				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este CPF.");
+			}
+			
+			if (cliente.getEmail().equals(dto.getEmail())) {
+				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este e-mail.");
+			}
+
+			if (cliente.getUsername().equals(dto.getUsername())) {
+				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este username.");
+			}
+		}
 
 		entity.setEmail(dto.getEmail());
 		entity.setUsername(dto.getUsername());

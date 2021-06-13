@@ -8,6 +8,7 @@ import org.serratec.viroumemeapi.dtos.ClienteDTOResponse;
 import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
+import org.serratec.viroumemeapi.exceptions.ItemAlreadyExistsException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.ClienteMapper;
 import org.serratec.viroumemeapi.services.ClienteService;
@@ -51,7 +52,7 @@ public class ClienteController {
 
 	@PostMapping("/create")
 	public ResponseEntity<String> create(@RequestBody ClienteDTORequest cliente)
-			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException, ItemAlreadyExistsException {
 
 		service.create(cliente);
 
@@ -60,7 +61,7 @@ public class ClienteController {
 
 	@PutMapping("/cliente/{id}")
 	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ClienteDTORequest cliente)
-			throws ItemNotFoundException, CpfNotEditableException {
+			throws ItemNotFoundException, CpfNotEditableException, ItemAlreadyExistsException {
 		service.update(id, cliente);
 
 		return new ResponseEntity<String>("Cliente editado com sucesso", HttpStatus.OK);

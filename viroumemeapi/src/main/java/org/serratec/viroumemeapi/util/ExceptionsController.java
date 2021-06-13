@@ -3,6 +3,7 @@ package org.serratec.viroumemeapi.util;
 import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.CategoryReferencedByProductException;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
+import org.serratec.viroumemeapi.exceptions.ItemAlreadyExistsException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.exceptions.ProductStockLessThanRequestedException;
 import org.serratec.viroumemeapi.exceptions.PurchaseOrderNotEditableException;
@@ -56,6 +57,11 @@ public class ExceptionsController {
 	@ExceptionHandler(AddressNotAssociatedWithClientException.class)
 	public ResponseEntity<String> handleAddressNotAssociatedWithClientException(
 			AddressNotAssociatedWithClientException exception) {
+		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
+	}
+
+	@ExceptionHandler(ItemAlreadyExistsException.class)
+	public ResponseEntity<String> handleItemAlreadyExistsException(ItemAlreadyExistsException exception) {
 		return ResponseEntity.ok().header("x-erro-msg", exception.getMessage()).build();
 	}
 }

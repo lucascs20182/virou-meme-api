@@ -10,6 +10,7 @@ import org.serratec.viroumemeapi.entities.ClienteEntity;
 import org.serratec.viroumemeapi.entities.EnderecoEntity;
 import org.serratec.viroumemeapi.exceptions.AddressNotAssociatedWithClientException;
 import org.serratec.viroumemeapi.exceptions.CpfNotEditableException;
+import org.serratec.viroumemeapi.exceptions.ItemAlreadyExistsException;
 import org.serratec.viroumemeapi.exceptions.ItemNotFoundException;
 import org.serratec.viroumemeapi.mappers.ClienteMapper;
 import org.serratec.viroumemeapi.repositories.ClienteRepository;
@@ -43,7 +44,7 @@ public class ClienteService {
 	}
 
 	public ClienteEntity create(ClienteDTORequest dto)
-			throws ItemNotFoundException, AddressNotAssociatedWithClientException {
+			throws ItemNotFoundException, AddressNotAssociatedWithClientException, ItemAlreadyExistsException {
 		ClienteEntity entity = clienteMapper.toEntity(dto);
 
 		clienteRepository.save(entity);
@@ -65,8 +66,23 @@ public class ClienteService {
 		return entity;
 	}
 
-	public ClienteEntity update(Long id, ClienteDTORequest dto) throws ItemNotFoundException, CpfNotEditableException {
+	public ClienteEntity update(Long id, ClienteDTORequest dto)
+			throws ItemNotFoundException, CpfNotEditableException, ItemAlreadyExistsException {
 		ClienteEntity entity = this.getById(id);
+
+		for (ClienteEntity cliente : this.getAll()) {
+			if (cliente.getCpf().equals(dto.getCpf())) {
+				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este CPF.");
+			}
+			
+			if (cliente.getEmail().equals(dto.getEmail())) {
+				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este e-mail.");
+			}
+
+			if (cliente.getUsername().equals(dto.getUsername())) {
+				throw new ItemAlreadyExistsException("Uma conta já foi cadastrada utilizando este username.");
+			}
+		}
 
 		if (dto.getEmail() != null) {
 			entity.setEmail(dto.getEmail());

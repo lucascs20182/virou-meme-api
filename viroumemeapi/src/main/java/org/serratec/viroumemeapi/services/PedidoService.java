@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
+import org.serratec.viroumemeapi.config.EmailConfig;
 import org.serratec.viroumemeapi.dtos.DetalhesPedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.PedidoDTORequest;
 import org.serratec.viroumemeapi.entities.DetalhesPedidoEntity;
@@ -42,6 +45,9 @@ public class PedidoService {
 	@Autowired
 	DetalhesPedidoMapper detalhesPedidoMapper;
 
+	@Autowired
+	EmailConfig mailConfig;
+
 	public List<PedidoEntity> getAll() {
 		return pedidoRepository.findAll();
 	}
@@ -72,13 +78,13 @@ public class PedidoService {
 		// pedido
 		entity = pedidoRepository.save(entity);
 
-		//PROVAVEL 
+		// PROVAVEL
 		Set<Long> idsDosProdutosNoPedido = new HashSet<Long>();
 
 		if (dto.getProdutosDoPedido() != null) {
 			for (DetalhesPedidoDTORequest detalhesPedido : dto.getProdutosDoPedido()) {
 				Boolean isNotRepeated = idsDosProdutosNoPedido.add(detalhesPedido.getIdProduto());
-	
+
 				if (!isNotRepeated) {
 					throw new ItemAlreadyExistsException("Pedido com produto duplicado.");
 				}
@@ -153,7 +159,8 @@ public class PedidoService {
 		return pedidoRepository.save(entity);
 	}
 
-	public PedidoEntity updateStatus(Long id) throws ItemNotFoundException, ProductStockLessThanRequestedException {
+	public PedidoEntity updateStatus(Long id)
+			throws ItemNotFoundException, ProductStockLessThanRequestedException, MessagingException {
 		PedidoEntity entity = this.getById(id);
 
 		if (entity.getStatus() != StatusPedido.NAO_FINALIZADO) {
@@ -177,6 +184,8 @@ public class PedidoService {
 		entity.setDataEntrega(dataQuePedidoFoiFinalizado.plusDays(15));
 
 		entity.setStatus(StatusPedido.FINALIZADO);
+
+		mailConfig.sendEmailOrderCompleted(entity);
 
 		return pedidoRepository.save(entity);
 	}

@@ -3,6 +3,8 @@ package org.serratec.viroumemeapi.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.serratec.viroumemeapi.dtos.PedidoDTORequest;
 import org.serratec.viroumemeapi.dtos.PedidoDTOResponse;
 import org.serratec.viroumemeapi.entities.PedidoEntity;
@@ -62,8 +64,8 @@ public class PedidoController {
 	}
 
 	@PutMapping("/finalizar/{id}")
-	public ResponseEntity<String> update(@PathVariable Long id)
-			throws ItemNotFoundException, CpfNotEditableException, ProductStockLessThanRequestedException {
+	public ResponseEntity<String> update(@PathVariable Long id) throws ItemNotFoundException, CpfNotEditableException,
+			ProductStockLessThanRequestedException, MessagingException {
 		service.updateStatus(id);
 
 		return new ResponseEntity<String>("Pedido finalizado com sucesso", HttpStatus.OK);

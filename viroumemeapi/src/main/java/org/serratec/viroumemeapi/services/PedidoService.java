@@ -185,9 +185,11 @@ public class PedidoService {
 
 		entity.setStatus(StatusPedido.FINALIZADO);
 
+		pedidoRepository.save(entity);
+
 		mailConfig.sendEmailOrderCompleted(entity);
 
-		return pedidoRepository.save(entity);
+		return entity;
 	}
 
 	public void delete(Long id) throws ItemNotFoundException {
